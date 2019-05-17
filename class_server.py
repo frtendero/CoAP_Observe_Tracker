@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 from __future__ import print_function  # Print function in Python 2 and 3
+
+import argparse
 import sys
-from coapthon.resources.resource import Resource
 from coapthon.server.coap import CoAP
 from class_resources import BasicResource, ObservableResource, CPUResource, MemResource, PsutilResource
 """
@@ -15,14 +16,17 @@ def ignore_listen_exception(exception, server):
     print(type)
     return True
 
-def main():
+def main(args):
     # IP and Port configuration
     ip = "0.0.0.0"
     port = 5683
-    multicast = True  # IP is not multicast
 
     # Create the CoAP server
-    server = CoAP((ip, port), multicast=multicast, cb_ignore_listen_exception=ignore_listen_exception)
+    server = CoAP(
+        (ip, port),
+        multicast=args.multicast,
+        cb_ignore_listen_exception=ignore_listen_exception
+    )
 
     # Register resources
     server.add_resource('info/', BasicResource(coap_server=server))
@@ -34,6 +38,7 @@ def main():
     try:
         # Start listening for incoming requests
         server.listen()
+
     except KeyboardInterrupt:
         print("Server Shutdown")
         server.close()
@@ -41,4 +46,13 @@ def main():
         sys.exit(2)
 
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser()
+
+    parser.add_argument(
+        '-M', '--multicast',
+        help="Whether IP is multicast or not, default: True",
+        type=bool,
+        default=True
+    )
+
+    main(parser.parse_args())
