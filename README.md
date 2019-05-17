@@ -1,0 +1,2 @@
+# CoAP_Observe_Tracker
+CoAP observe tracker application. The application tracker makes an observation to all the observable resources available in the CoAP servers in the network.  Resources can change during their life cycle, thus the application should detect resources changes such as removing, adding or updating in order to have an up-to-date representation of the observations through continuously discovery (polling). Therefore, the application obtains the resources of each CoAP server and start an observation in each observable resource.
