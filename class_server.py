@@ -11,20 +11,28 @@ from class_resources import BasicResource, ObservableResource, CPUResource, MemR
 
 __author__ = 'Fco R Tendero'
 
+
 def ignore_listen_exception(exception, server):
     type = exception.__class__.__name__
     print(type)
     return True
+
 
 def main(args):
     # IP and Port configuration
     ip = "0.0.0.0"
     port = 5683
 
+    # print which type of transmission is used:
+    if args.unicast:
+        print("Unicast transmission")
+    else:
+        print("Multicast transmission")
+
     # Create the CoAP server
     server = CoAP(
         (ip, port),
-        multicast=args.multicast,
+        multicast=not args.unicast,
         cb_ignore_listen_exception=ignore_listen_exception
     )
 
@@ -45,14 +53,15 @@ def main(args):
         print("Exiting...")
         sys.exit(2)
 
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
 
     parser.add_argument(
-        '-M', '--multicast',
-        help="Whether IP is multicast or not, default: True",
-        type=bool,
-        default=True
+        '-U', '--unicast',
+        help="If flag is used: unicast transmission. If not (default): multicast transmission",
+        default=False,
+        action='store_true'
     )
 
     main(parser.parse_args())

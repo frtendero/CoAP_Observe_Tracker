@@ -14,11 +14,13 @@ __author__ = 'Fco R Tendero'
 
 
 # Global variables
-observables = [] # list of observed paths.
+observables = []    # list of observed paths.
+
 
 # Observe callback receive function
 def observe_callback(response):
     print(response.payload)
+
 
 def update_observable_resources(response):
     """
@@ -32,7 +34,7 @@ def update_observable_resources(response):
         elems = str(resource).split(";")
 
         if "obs" in elems: # if resource is observable
-            # get path (position 0) and remove undesired characthers
+            # get path (position 0) and remove undesired characters
             observable_path = elems[0].translate(
                 str.maketrans({'<': '', '>': ''})
             )
@@ -50,8 +52,7 @@ def main(args):
 
     logging.disable(logging.DEBUG)  # Disable DEBUG logging
 
-
-    while (True):
+    while True:
         client = HelperClient(server=(args.host, args.port))
         response = client.discover()
 
@@ -62,11 +63,11 @@ def main(args):
             for path in observables:
                 client.observe(path, observe_callback)
 
-        except (AttributeError):
+        except AttributeError:
             print("Empty resource: Doesn't contain a payload")
 
         finally:
-            sleep(5) # 5 seconds between new discover
+            sleep(5)    # 5 seconds between new discover
 
 
 if __name__ == '__main__':
@@ -74,7 +75,8 @@ if __name__ == '__main__':
 
     parser.add_argument(
         '-H', '--host',
-        help="IP direction of the CoAP server, default: MULTICAST",
+        help="IP direction of the CoAP server, default: MULTICAST. "
+             "*NOTE*: If Server is transmitting MULTICAST, no messages will be received if an UNICAST IP is selected",
         default=defines.ALL_COAP_NODES
     )
     parser.add_argument(
